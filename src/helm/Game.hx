@@ -2,8 +2,10 @@ package helm;
 import lde.Lde;
 import lde.Key;
 import lde.Lde.IGame;
+import lde.Lde.Pointer;
 import openfl.display.BitmapData;
 import openfl.ui.Keyboard;
+import openfl.ui.Mouse;
 
 /**
  * ...
@@ -19,6 +21,7 @@ class Game implements IGame
 	{
 	}
 	
+	var ptr : Entity;
 	var item : Entity;
 	var items = new List<Entity>();
 	public function init()
@@ -46,6 +49,13 @@ class Game implements IGame
 		item.anim.data.push(new BitmapData(20, 20, false, 0xffc000));
 		item.anim.data.push(new BitmapData(20, 20, false, 0xffff00));
 		Lde.add(item);
+		
+		ptr = new Entity();
+		ptr.anim = new Animation();
+		ptr.anim.data.push(new BitmapData(16, 16, false));
+		Lde.add(ptr);
+		
+		//Mouse.hide();
 	}
 	
 	public function step()
@@ -59,6 +69,9 @@ class Game implements IGame
 			item.x = (WIDTH - item.anim.data[0].rect.width) / 2;
 			item.y = (HEIGHT - item.anim.data[0].rect.height) / 2;
 		}
-		item.anim.i = Std.int(Lde.frame/10) % item.anim.data.length;
+		item.anim.i = Std.int(Lde.frame / 10) % item.anim.data.length;
+		
+		ptr.x = Pointer.x;
+		ptr.y = Pointer.y;
 	}
 }

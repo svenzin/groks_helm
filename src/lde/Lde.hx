@@ -3,6 +3,7 @@ import openfl.Lib;
 import openfl.events.Event;
 import openfl.display.BitmapData;
 import openfl.display.Bitmap;
+import openfl.events.MouseEvent;
 import openfl.geom.Point;
 
 /**
@@ -18,6 +19,10 @@ class Animation
 		i = 0;
 		data = new Array<BitmapData>();
 	}
+	public function renderAt(p : Point, surface : Bitmap)
+	{
+		surface.bitmapData.copyPixels(data[i], data[i].rect, p);
+	}
 }
 class Entity
 {
@@ -30,11 +35,7 @@ class Entity
 	public var anim : Animation;
 	public function render(surface : Bitmap)
 	{
-		if (anim != null)
-		{
-			var data = anim.data[anim.i];
-			surface.bitmapData.copyPixels(data, data.rect, new Point(x, y));
-		}
+		if (anim != null) anim.renderAt(new Point(x, y), surface);
 	}
 }
 interface IGame
@@ -44,6 +45,27 @@ interface IGame
 	public var SCALE : Int;
 	public function init() : Void;
 	public function step() : Void;
+}
+class Pointer
+{
+	public static var x : Float;
+	public static var y : Float;
+	
+	public static function init()
+	{
+		Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
+	}
+	
+	static function onMove(ptr : MouseEvent)
+	{
+		x = ptr.stageX / Lde._scale;
+		y = ptr.stageY / Lde._scale;
+	}
+	
+	public static function step()
+	{
+		
+	}
 }
 class Lde
 {
@@ -60,9 +82,16 @@ class Lde
 		objects.add(object);
 	}
 	
+	public static var _width : Float;
+	public static var _height : Float;
+	public static var _scale : Float;
 	static var surface : Bitmap;
 	static public function init(width : Int, height : Int, scale : Int = 1)
 	{
+		_width = width;
+		_height = height;
+		_scale = scale;
+		
 		var data = new BitmapData(width, height, false);
 		surface = new Bitmap(data, "always", false);
 		surface.x = 0;
@@ -76,6 +105,7 @@ class Lde
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, step);
 		
 		Key.init();
+		Pointer.init();
 		
 		_game.init();
 	}
@@ -94,5 +124,6 @@ class Lde
 		}
 		
 		Key.step();
+		Pointer.step();
 	}
 }
