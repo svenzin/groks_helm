@@ -5,37 +5,31 @@ import openfl.display.BitmapData;
 import openfl.display.Bitmap;
 import openfl.events.MouseEvent;
 import openfl.geom.Point;
+import lde.gfx.Animation;
+import lde.gfx.AnimationPlayback;
 
 /**
  * ...
  * @author scorder
  */
-class Animation
-{
-	public var i : Int;
-	public var data : Array<BitmapData>;
-	public function new()
-	{
-		i = 0;
-		data = new Array<BitmapData>();
-	}
-	public function renderAt(p : Point, surface : Bitmap)
-	{
-		surface.bitmapData.copyPixels(data[i], data[i].rect, p);
-	}
-}
 class Entity
 {
 	public function new()
 	{
-		anim = null;
+		graphics = null;
 	}
 	public var x : Float;
 	public var y : Float;
-	public var anim : Animation;
+	
+	public var graphics : AnimationPlayback;
+	public function play(animation : Animation)
+	{
+		graphics = new AnimationPlayback(animation);
+		return graphics.play();
+	}
 	public function render(surface : Bitmap)
 	{
-		if (anim != null) anim.renderAt(new Point(x, y), surface);
+		if (graphics != null) graphics.renderAt(new Point(x, y), surface);
 	}
 }
 interface IGame
